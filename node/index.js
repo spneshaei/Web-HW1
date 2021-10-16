@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json()
 
-const port = 3000;
+const port = 8001;
 
 const redis = require('redis');
 const client = redis.createClient({
