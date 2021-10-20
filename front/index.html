@@ -5,14 +5,39 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css" />
+    <script src="index.js" async defer></script>
     <title>HashFinder</title>
 </head>
 <body>
-    <div id="container">
+    <div id="header">
         <h1>HashFinder</h1>
-        <input type="text" placeholder="Enter source string" />
-        <button onclick="hashInput">Find the hash</button>
-        <p>The result hash is ""</p>
+    </div>
+    <div id="container">
+        <div class="grid-container">
+            <div class="grid-item">
+                <div class="form">
+                    <h2>String to Hash</h2>
+                    <form>
+                        <input type="text" placeholder="Enter string" id="stringInput" />
+                    </form>
+                    <button onclick="findHashGo">Look Up with GoLang</button>
+                    <button onclick="findHashNode">Look Up with NodeJS</button>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+            <div class="grid-item">
+                <div class="form">
+                    <h2>Hash to String</h2>
+                    <form>
+                        <input type="text" placeholder="Enter hash" id="hashInput" />
+                    </form>
+                    <button onclick="findStringGo">Look Up with GoLang</button>
+                    <button onclick="findStringNode">Look Up with NodeJS</button>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>
