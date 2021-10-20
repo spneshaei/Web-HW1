@@ -11,19 +11,18 @@ package main
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
+	"github.com/mediocregopher/radix/v3"
 )
 
-var rdb = redis.NewClient(&redis.Options{
-	Addr:     "0.0.0.0:6379",
-	Password: "",
-	DB:       0,
-})
+var pool *radix.Pool
+var poolErr error
 
 func findSha256(s string) string {
 	h := sha1.New()
@@ -34,8 +33,7 @@ func findSha256(s string) string {
 func shaPost(c *gin.Context) {
 	inputString := c.Param("string")
 	sha256 := findSha256(inputString)
-	fmt.Println("ss", inputString, sha256)
-	err := rdb.Set(sha256, string(inputString), 0).Err()
+	err := pool.Do(radix.Cmd(nil, "SET", sha256, inputString))
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{
 			"result": sha256,
@@ -48,13 +46,22 @@ func shaPost(c *gin.Context) {
 }
 
 func shaGet(c *gin.Context) {
-	inputSha256 := c.Param("sha256")
-	value, err := rdb.Get(inputSha256).Result()
-	if err == redis.Nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "value not found",
+	jsonData, jsonErr := ioutil.ReadAll(c.Request.Body)
+
+	if jsonErr != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "wrong format",
 		})
-	} else if err != nil {
+		return
+	}
+
+	var results map[string]interface{}
+	json.Unmarshal([]byte(jsonData), &results)
+	inputSha256 := results["sha256"]
+
+	var value string
+	err := pool.Do(radix.Cmd(&value, "GET", fmt.Sprint(inputSha256)))
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err,
 		})
@@ -68,8 +75,13 @@ func shaGet(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
-	router.POST("/sha", shaPost)
-	router.GET("/sha", shaGet)
+	pool, poolErr = radix.NewPool("tcp", "0.0.0.0:6379", 10)
+	if poolErr != nil {
+		fmt.Println("Error - " + poolErr.Error())
+	}
 
-	router.Run(":7070")
+	router.POST("/go/sha", shaPost)
+	router.GET("/go/sha", shaGet)
+
+	router.Run(":7071")
 }
