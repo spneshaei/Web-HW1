@@ -31,7 +31,19 @@ func findSha256(s string) string {
 }
 
 func shaPost(c *gin.Context) {
-	inputString := c.Param("string")
+	jsonData, jsonErr := ioutil.ReadAll(c.Request.Body)
+
+	if jsonErr != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "wrong format",
+		})
+		return
+	}
+
+	var results map[string]interface{}
+	json.Unmarshal([]byte(jsonData), &results)
+	inputString := fmt.Sprint(results["string"])
+
 	sha256 := findSha256(inputString)
 	err := pool.Do(radix.Cmd(nil, "SET", sha256, inputString))
 	if err == nil {
