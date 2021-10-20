@@ -17,9 +17,16 @@ client.on('error', function (err) {
   console.log('Error ' + err);
 });
 
+// TODO: Error code on return!!!
+
 app.post('/node/sha', jsonParser, (req, res) => {
     try {
         const string = req.body.string; // Error check
+        if (string.length < 8) {
+            res.send(JSON.stringify(
+                {"error": "input string is shorter than 8 characters",}
+            ));
+        }
         const hash = crypto.createHash('sha256').update(string).digest('hex');
         client.set(hash, string, (err, reply) => {
             if (reply == "OK") {

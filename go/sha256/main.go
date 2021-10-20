@@ -44,6 +44,13 @@ func shaPost(c *gin.Context) {
 	json.Unmarshal([]byte(jsonData), &results)
 	inputString := fmt.Sprint(results["string"])
 
+	if len(inputString) < 8 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "input string is shorter than 8 characters",
+		})
+		return
+	}
+
 	sha256 := findSha256(inputString)
 	err := pool.Do(radix.Cmd(nil, "SET", sha256, inputString))
 	if err == nil {
