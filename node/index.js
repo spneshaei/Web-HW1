@@ -71,6 +71,18 @@ app.get('/node/sha', jsonParser, (req, res) => {
     }
 });
 
+app.get('*', function(req, res){
+    res.status(404).send(JSON.stringify(
+        {"error": 'endpoint not found',}
+    ));
+});
+
+app.post('*', function(req, res){
+    res.status(404).send(JSON.stringify(
+        {"error": 'endpoint not found',}
+    ));
+});
+
 app.listen(port, () => {
     console.log('App listening at http://localhost:' + port);
 });

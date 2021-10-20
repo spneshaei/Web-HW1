@@ -94,7 +94,7 @@ func shaGet(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
-	pool, poolErr = radix.NewPool("tcp", "0.0.0.0:6379", 10)
+	pool, poolErr = radix.NewPool("tcp", "host.docker.internal:6379", 10)
 	if poolErr != nil {
 		fmt.Println("Error - " + poolErr.Error())
 	}
@@ -102,5 +102,11 @@ func main() {
 	router.POST("/go/sha", shaPost)
 	router.GET("/go/sha", shaGet)
 
-	router.Run(":7071")
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "endpoint not found",
+		})
+	})
+
+	router.Run(":7070")
 }
