@@ -17,7 +17,7 @@ client.on('error', function (err) {
   console.log('Error ' + err);
 });
 
-app.post('/sha', jsonParser, (req, res) => {
+app.post('/node/sha', jsonParser, (req, res) => {
     try {
         const string = req.body.string; // Error check
         const hash = crypto.createHash('sha256').update(string).digest('hex');
@@ -39,7 +39,7 @@ app.post('/sha', jsonParser, (req, res) => {
     }
 });
 
-app.get('/sha', jsonParser, (req, res) => {
+app.get('/node/sha', jsonParser, (req, res) => {
     try {
         const hash = req.body.sha256; // Error check
         client.get(hash, (err, result) => {
