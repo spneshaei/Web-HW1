@@ -8,6 +8,10 @@ hashOutput = document.getElementById("hashOutput");
 // MARK: String to Hash
 
 async function findHash(backendType) { // backendType = go | node
+    if (stringInput.value.length < 8) {
+        alert("Input string can't be less than 8 characters long")
+        return;
+    }
     hashOutput.innerHTML = "Loading..."
     const response = await fetch('http://localhost/' + backendType + '/sha', {
         method: 'POST',
