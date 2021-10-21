@@ -20,12 +20,6 @@ client.on('error', function (err) {
 app.post('/node/sha', jsonParser, (req, res) => {
     try {
         console.log("1");
-        if (!req.body.has("string")) {
-            res.status(400).send(JSON.stringify(
-                {"error": "wrong format",}
-            ));
-            return
-        }
         console.log("2");
         const string = req.body.string;
         console.log("3");
@@ -66,12 +60,6 @@ app.post('/node/sha', jsonParser, (req, res) => {
 
 app.get('/node/sha', jsonParser, (req, res) => {
     try {
-        if (!req.query.has("sha256")) {
-            res.status(400).send(JSON.stringify(
-                {"error": "wrong format",}
-            ));
-            return
-        }
         const hash = req.query.sha256;
         if (hash == undefined || hash == null) {
             res.status(400).send(JSON.stringify(
