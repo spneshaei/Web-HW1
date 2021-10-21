@@ -17,25 +17,23 @@ client.on('error', function (err) {
   console.log('Error ' + err);
 });
 
-// TODO: Error code on return!!!
-
 app.post('/node/sha', jsonParser, (req, res) => {
     try {
         if (!req.body.has("string")) {
-            res.send(JSON.stringify(
+            res.status(400).send(JSON.stringify(
                 {"error": "wrong format",}
             ));
             return
         }
         const string = req.body.string;
         if (string == undefined || string == null) {
-            res.send(JSON.stringify(
+            res.status(400).send(JSON.stringify(
                 {"error": "wrong format",}
             ));
             return
         }
         if (string.length < 8) {
-            res.send(JSON.stringify(
+            res.status(400).send(JSON.stringify(
                 {"error": "input string is shorter than 8 characters",}
             ));
             return
@@ -43,17 +41,17 @@ app.post('/node/sha', jsonParser, (req, res) => {
         const hash = crypto.createHash('sha256').update(string).digest('hex');
         client.set(hash, string, (err, reply) => {
             if (reply == "OK") {
-                res.send(JSON.stringify(
+                res.status(201).send(JSON.stringify(
                     {"result": hash,}
                 ));
             } else {
-                res.send(JSON.stringify(
+                res.status(500).send(JSON.stringify(
                     {"error": err.message,}
                 ));
             }
         });
     } catch (error) {
-        res.send(JSON.stringify(
+        res.status(500).send(JSON.stringify(
             {"error": error,}
         ));
     }
@@ -62,35 +60,35 @@ app.post('/node/sha', jsonParser, (req, res) => {
 app.get('/node/sha', jsonParser, (req, res) => {
     try {
         if (!req.query.has("sha256")) {
-            res.send(JSON.stringify(
+            res.status(400).send(JSON.stringify(
                 {"error": "wrong format",}
             ));
             return
         }
         const hash = req.query.sha256;
         if (hash == undefined || hash == null) {
-            res.send(JSON.stringify(
+            res.status(400).send(JSON.stringify(
                 {"error": "wrong format",}
             ));
             return
         }
         client.get(hash, (err, result) => {
             if (err != null) {
-                res.send(JSON.stringify(
+                res.status(500).send(JSON.stringify(
                     {"error": err.message,}
                 ));
             } else if (result == undefined || result == null) {
-                res.send(JSON.stringify(
+                res.status(404).send(JSON.stringify(
                     {"error": "value not found",}
                 ));
             } else {
-                res.send(JSON.stringify(
+                res.status(200).send(JSON.stringify(
                     {"result": result,}
                 ));
             }
         });
     } catch (error) {
-        res.send(JSON.stringify(
+        res.status(500).send(JSON.stringify(
             {"error": error,}
         ));
     }

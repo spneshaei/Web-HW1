@@ -1,11 +1,3 @@
-// TODO: 404, 500,...
-// TODO: In case of formatting error in input of requests
-// TODO: Test in real environment
-// TODO: better variable names
-// TODO: Expiry time for Redis set values?
-// TODO: Is it really sha256 or "sha1"???
-// TODO: Server logging (log files...?) when error?
-
 package main
 
 import (
@@ -34,7 +26,7 @@ func shaPost(c *gin.Context) {
 	jsonData, jsonErr := ioutil.ReadAll(c.Request.Body)
 
 	if jsonErr != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "wrong format",
 		})
 		return
@@ -43,14 +35,14 @@ func shaPost(c *gin.Context) {
 	var results map[string]interface{}
 	json.Unmarshal([]byte(jsonData), &results)
 	if results == nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "wrong format",
 		})
 		return
 	}
 	rawString, hasResult := results["string"]
 	if !hasResult {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "wrong format",
 		})
 		return
@@ -67,7 +59,7 @@ func shaPost(c *gin.Context) {
 	sha256 := findSha256(inputString)
 	err := pool.Do(radix.Cmd(nil, "SET", sha256, inputString))
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusCreated, gin.H{
 			"result": sha256,
 		})
 	} else {
@@ -80,7 +72,7 @@ func shaPost(c *gin.Context) {
 func shaGet(c *gin.Context) {
 	arr, hasResult := c.Request.URL.Query()["sha256"]
 	if !hasResult || len(arr) != 1 {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "wrong format",
 		})
 		return
