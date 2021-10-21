@@ -48,7 +48,7 @@ app.post('/node/sha', jsonParser, (req, res) => {
 
 app.get('/node/sha', jsonParser, (req, res) => {
     try {
-        const hash = req.body.sha256; // Error check
+        const hash = req.query.sha256; // Error check
         client.get(hash, (err, result) => {
             if (err != null) {
                 res.send(JSON.stringify(
