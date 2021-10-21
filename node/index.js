@@ -21,11 +21,24 @@ client.on('error', function (err) {
 
 app.post('/node/sha', jsonParser, (req, res) => {
     try {
-        const string = req.body.string; // Error check
+        if (!req.body.has("string")) {
+            res.send(JSON.stringify(
+                {"error": "wrong format",}
+            ));
+            return
+        }
+        const string = req.body.string;
+        if (string == undefined || string == null) {
+            res.send(JSON.stringify(
+                {"error": "wrong format",}
+            ));
+            return
+        }
         if (string.length < 8) {
             res.send(JSON.stringify(
                 {"error": "input string is shorter than 8 characters",}
             ));
+            return
         }
         const hash = crypto.createHash('sha256').update(string).digest('hex');
         client.set(hash, string, (err, reply) => {
@@ -48,7 +61,19 @@ app.post('/node/sha', jsonParser, (req, res) => {
 
 app.get('/node/sha', jsonParser, (req, res) => {
     try {
-        const hash = req.query.sha256; // Error check
+        if (!req.query.has("sha256")) {
+            res.send(JSON.stringify(
+                {"error": "wrong format",}
+            ));
+            return
+        }
+        const hash = req.query.sha256;
+        if (hash == undefined || hash == null) {
+            res.send(JSON.stringify(
+                {"error": "wrong format",}
+            ));
+            return
+        }
         client.get(hash, (err, result) => {
             if (err != null) {
                 res.send(JSON.stringify(

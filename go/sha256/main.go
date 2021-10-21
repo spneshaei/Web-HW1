@@ -42,7 +42,20 @@ func shaPost(c *gin.Context) {
 
 	var results map[string]interface{}
 	json.Unmarshal([]byte(jsonData), &results)
-	inputString := fmt.Sprint(results["string"])
+	if results == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "wrong format",
+		})
+		return
+	}
+	rawString, hasResult := results["string"]
+	if !hasResult {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "wrong format",
+		})
+		return
+	}
+	inputString := fmt.Sprint(rawString)
 
 	if len(inputString) < 8 {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -65,8 +78,8 @@ func shaPost(c *gin.Context) {
 }
 
 func shaGet(c *gin.Context) {
-	arr := c.Request.URL.Query()["sha256"]
-	if len(arr) != 1 {
+	arr, hasResult := c.Request.URL.Query()["sha256"]
+	if !hasResult || len(arr) != 1 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "wrong format",
 		})
