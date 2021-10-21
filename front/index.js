@@ -2,8 +2,7 @@
 
 stringInput = document.getElementById("stringInput");
 hashInput = document.getElementById("hashInput");
-stringOutput = document.getElementById("stringOutput");
-hashOutput = document.getElementById("hashOutput");
+output = document.getElementById("output");
 
 // MARK: String to Hash
 
@@ -12,7 +11,7 @@ async function findHash(backendType) { // backendType = go | node
         alert("Input string can't be less than 8 characters long")
         return;
     }
-    hashOutput.innerHTML = "Loading..."
+    output.innerHTML = "Loading..."
     const response = await fetch('http://localhost/' + backendType + '/sha', {
         method: 'POST',
         headers: {
@@ -23,11 +22,11 @@ async function findHash(backendType) { // backendType = go | node
     });
     const json = await response.json();
     if ((json.error != undefined) || json.result == undefined) {
-        hashOutput.innerHTML = ""
+        output.innerHTML = ""
         alert("Error: " + json.error);
         return;
     }
-    hashOutput.innerHTML = json.result;
+    output.innerHTML = json.result;
 }
 
 async function findHashGo() {
@@ -41,18 +40,18 @@ async function findHashNode() {
 // MARK: Hash to String
 
 async function findString(backendType) { // backendType = go | node
-    stringOutput.innerHTML = "Loading..."
+    output.innerHTML = "Loading..."
     const response = await fetch('http://localhost/' + backendType +
      '/sha?sha256=' + encodeURIComponent(hashInput.value), {
         method: 'GET',
     });
     const json = await response.json();
     if ((json.error != undefined) || json.result == undefined) {
-        stringOutput.innerHTML = ""
+        output.innerHTML = ""
         alert("Error: " + json.error);
         return;
     }
-    stringOutput.innerHTML = json.result;
+    output.innerHTML = json.result;
 }
 
 async function findStringGo() {

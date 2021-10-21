@@ -76,6 +76,11 @@ button:hover {
     opacity: 70%;
 }
 
+p {
+    font-size: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
 @media (min-width: 768px) {
     .grid-container {
         width: 90%;

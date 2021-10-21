@@ -19,28 +19,21 @@ client.on('error', function (err) {
 
 app.post('/node/sha', jsonParser, (req, res) => {
     try {
-        console.log("1");
-        console.log("2");
         const string = req.body.string;
-        console.log("3");
         if (string == undefined || string == null) {
             res.status(400).send(JSON.stringify(
                 {"error": "wrong format",}
             ));
             return
         }
-        console.log("4");
         if (string.length < 8) {
             res.status(400).send(JSON.stringify(
                 {"error": "input string is shorter than 8 characters",}
             ));
             return
         }
-        console.log("5");
         const hash = crypto.createHash('sha256').update(string).digest('hex');
-        console.log("6");
         client.set(hash, string, (err, reply) => {
-            console.log("7", reply);
             if (reply == "OK") {
                 res.status(201).send(JSON.stringify(
                     {"result": hash,}
