@@ -52,7 +52,7 @@ app.post('/node/sha', jsonParser, (req, res) => {
         });
     } catch (error) {
         res.status(500).send(JSON.stringify(
-            {"error": error,}
+            {"error": error.message,}
         ));
     }
 });
@@ -89,7 +89,7 @@ app.get('/node/sha', jsonParser, (req, res) => {
         });
     } catch (error) {
         res.status(500).send(JSON.stringify(
-            {"error": error,}
+            {"error": error.message,}
         ));
     }
 });
