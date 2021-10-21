@@ -65,19 +65,14 @@ func shaPost(c *gin.Context) {
 }
 
 func shaGet(c *gin.Context) {
-	jsonData, jsonErr := ioutil.ReadAll(c.Request.Body)
-
-	if jsonErr != nil {
+	arr := c.Request.URL.Query()["sha256"]
+	if len(arr) != 1 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "wrong format",
 		})
 		return
 	}
-
-	var results map[string]interface{}
-	json.Unmarshal([]byte(jsonData), &results)
-	inputSha256 := results["sha256"]
-
+	inputSha256 := arr[0]
 	var value string
 	err := pool.Do(radix.Cmd(&value, "GET", fmt.Sprint(inputSha256)))
 	if err != nil {
@@ -94,7 +89,8 @@ func shaGet(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
-	pool, poolErr = radix.NewPool("tcp", "host.docker.internal:6379", 10)
+	pool, poolErr = radix.NewPool("tcp", "0.0.0.0:6379", 10)
+	// pool, poolErr = radix.NewPool("tcp", "host.docker.internal:6379", 10)
 	if poolErr != nil {
 		fmt.Println("Error - " + poolErr.Error())
 	}
@@ -108,5 +104,5 @@ func main() {
 		})
 	})
 
-	router.Run(":7070")
+	router.Run(":7071")
 }
