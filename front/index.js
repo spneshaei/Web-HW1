@@ -4,20 +4,13 @@ stringOutput = document.getElementById("stringOutput");
 hashOutput = document.getElementById("hashOutput");
 
 async function findStringGo() {
-    const response = await fetch('http://localhost/go/sha', {
+    const response = await fetch('http://localhost/go/sha?sha256=' + hashInput.value, {
         method: 'GET',
-        headers: {
-            'Accept': 'application/json'
-        },
-        // body: JSON.stringify({
-        //     'sha256': hashInput.value
-        // })
     });
     const json = await response.json();
     if ((json.error != undefined) || json.result == undefined) {
         alert("Error: " + json.error);
         return;
     }
-    console.log("h");
     stringOutput.innerHTML = json.result;
 }
