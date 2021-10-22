@@ -78,13 +78,13 @@ func shaGet(c *gin.Context) {
 		return
 	}
 	inputSha256 := arr[0]
-	var value = "value not found"
+	var value string
 	err := pool.Do(radix.Cmd(&value, "GET", fmt.Sprint(inputSha256)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err,
 		})
-	} else if value == "value not found" {
+	} else if value == "" {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "value not found",
 		})
