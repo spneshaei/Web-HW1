@@ -1,0 +1,1 @@
+Code should be run with the command 'go run main.go'.

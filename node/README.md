@@ -1,0 +1,1 @@
+Code should be run with the command 'node index.js'. If error happens, first run 'npm i' and then run 'node index.js'.

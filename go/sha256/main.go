@@ -1,7 +1,7 @@
 package main
 
 import (
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -17,7 +17,7 @@ var pool *radix.Pool
 var poolErr error
 
 func findSha256(s string) string {
-	h := sha1.New()
+	h := sha256.New()
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))
 }
@@ -83,6 +83,10 @@ func shaGet(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err,
+		})
+	} else if value == "" {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "value not found",
 		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
