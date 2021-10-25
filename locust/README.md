@@ -1,0 +1,1 @@
+To run load test, enter the corrseponding directory (indicating server type and request method) and then run 'locust'.

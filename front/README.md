@@ -1,0 +1,1 @@
+To run the front-end code, it should be located in the address specified in nginx configuration. After running nginx and navigate to the localhost address, the front-end should be visible.
