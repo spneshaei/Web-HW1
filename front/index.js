@@ -12,7 +12,7 @@ async function findHash(backendType) { // backendType = go | node
         return;
     }
     output.innerHTML = "Loading..."
-    const response = await fetch('http://localhost/' + backendType + '/sha', {
+    const response = await fetch('http://localhost/' + backendType + '/sha256', {
         method: 'POST',
         headers: {
             'Accept': 'application/json, text/plain, */*',
@@ -42,7 +42,7 @@ async function findHashNode() {
 async function findString(backendType) { // backendType = go | node
     output.innerHTML = "Loading..."
     const response = await fetch('http://localhost/' + backendType +
-     '/sha?sha256=' + encodeURIComponent(hashInput.value), {
+     '/sha256?sha256=' + encodeURIComponent(hashInput.value), {
         method: 'GET',
     });
     const json = await response.json();
